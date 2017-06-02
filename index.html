@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Parser</title>
+<meta name='keywords' content="Parser">
+<meta name='description' content="Parser">
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='shortcut icon' href='favicon.ico'>
+<link href="//fonts.googleapis.com/css?family=Roboto+Mono:300,300i,400,400i,700,700i|Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+
+<script type="text/javascript" src="handler/helpers.js"></script>
+<script type="text/javascript" src="handler/plot.js"></script>
+<script type="text/javascript" src="handler/handler.js"></script>
+
+<script type="text/javascript" src="parser/bnf.js"></script>
+<script type="text/javascript" src="parser/parser.js"></script>
+
+<script type="text/javascript" src="objects/objects.js"></script>
+<script type="text/javascript" src="objects/character.js"></script>
+<script type="text/javascript" src="objects/item.js"></script>
+<script type="text/javascript" src="objects/room.js"></script>
+<script type="text/javascript" src="objects/container.js"></script>
+<script type="text/javascript" src="objects/door.js"></script>
+
+<script type="text/javascript" src="story.js"></script>
+
+<style>
+body { font-family:"Roboto Mono"; font-weight:300; font-size:10pt; }
+</style>
+</head>
+<body>
+<div style="width:100%;height:32px;background-color:#777;position:fixed;left:0;top:0;line-height:32px;padding:0 8px;color:#fff;font-weight:700;" id="header"></div>
+<div id="container" style="padding-top:32px;"><div id="input-container" style="padding:4px;margin:4px;">&gt; <input id="input" style="font-size:10pt;font-family:'Roboto Mono';font-weight:300;padding:4px;8px;border:1px solid #ddd;width:calc(100% - 36px);outline:none;"></div></div>
+<script>
+window.onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('input').focus();
+};
+Handler.init();
+</script>
+</body>
+</html>
