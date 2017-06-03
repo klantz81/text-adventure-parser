@@ -10,6 +10,7 @@ var Plot = {
         },
         update: function() {
                 var list = [];
+                
                 for (var j = 0; j < Plot.events.length; j++) {
                         if (typeof(Plot.events[j].moves) != 'undefined') {
                                 if (Plot.events[j].moves == 0) {
@@ -28,7 +29,6 @@ var Plot = {
                                 }
                         }
                 }
-                
                 
                 return list.join("<br><br>");
         },

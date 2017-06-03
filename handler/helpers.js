@@ -48,42 +48,35 @@ function whichNoun(objects) {
 	return "Did you mean "+arr.join("")+"?";
 }
 
-function list(obj) {
-	if (typeof(obj) == "object") {
-		var list = [];
-                if (obj.type == "room") {
-                        for (var j in Objects) {
-                                if (Objects[j].type == "character" && Objects[j].location == obj.id && Objects[j].nouns[0] != 'player') {
-                                        list.push("&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[j].nouns[0], [], "")+" is here.<br>");
-                                }
+function list(obj, prepend) {
+        prepend = typeof(prepend) == 'undefined' ? "" : prepend;
+        
+        var list = [];
+        
+	if (typeof(obj) != "object")
+                obj = Objects[obj];
+        
+        if (obj.type == "room") {
+                for (var j in Objects) {
+                        if (Objects[j].type == "character" && Objects[j].location == obj.id && Objects[j].nouns[0] != 'player') {
+                                list.push("&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[j].nouns[0], [], "")+" is here.<br>");
                         }
                 }
-                
-		for (var j = 0; j < obj.objects.length; j++) {
-                        if (typeof(Objects[obj.objects[j]].hidden) == 'undefined' || !Objects[obj.objects[j]].hidden)
-                                list.push("&nbsp;&nbsp;&nbsp;&nbsp;There is "+theNoun(Objects[obj.objects[j]].nouns[0], Objects[obj.objects[j]].adjectives, "a")+".<br>");
+        }
+        
+        for (var j = 0; j < obj.objects.length; j++) {
+                if (!Objects[obj.objects[j]].hidden) {
+                        list.push("&nbsp;&nbsp;&nbsp;&nbsp;There is "+theNoun(Objects[obj.objects[j]].nouns[0], Objects[obj.objects[j]].adjectives, "a")+//".<br>");
+                                (Objects[obj.objects[j]].subtype == "container" ?
+                                        (Objects[obj.objects[j]].opened ? " (open) containing:" : " (closed).") :
+                                        (Objects[obj.objects[j]].subtype == "clothing" && Objects[obj.objects[j]].wearing ? " (wearing)." : "."))+"<br>");
+                        
+                        if (Objects[obj.objects[j]].subtype == "container" && Objects[obj.objects[j]].opened)
+                                list.push(smalllist(Objects[obj.objects[j]], prepend + "&nbsp;&nbsp;&nbsp;&nbsp;"));
                 }
-                
-		return list.join("");
-	} else if (typeof(Objects[obj].objects) != "undefined") {
-		var list = [];
-                if (Objects[obj].type == "room") {
-                        for (var j in Objects) {
-                                if (Objects[j].type == "character" && Objects[j].location == obj && Objects[j].nouns[0] != 'player') {
-                                        list.push("&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[j].nouns[0], [], "")+" is here.<br>");
-                                }
-                        }
-                }
-                
-		for (var j = 0; j < Objects[obj].objects.length; j++) {
-                        if (typeof(Objects[Objects[obj].objects[j]].hidden) == 'undefined' || !Objects[Objects[obj].objects[j]].hidden)
-                                list.push("&nbsp;&nbsp;&nbsp;&nbsp;There is "+theNoun(Objects[Objects[obj].objects[j]].nouns[0], Objects[Objects[obj].objects[j]].adjectives, "a")+".<br>");
-                }
-                
-		return list.join("");
-	} else {
-		return "";
-	}
+        }
+        
+        return list.join("");
 }
 
 function smalllist(obj, prepend) {
@@ -94,14 +87,12 @@ function smalllist(obj, prepend) {
 	if (typeof(obj) != "object")
                 obj = Objects[obj];
 
-        if (typeof(obj.objects) != 'undefined') {
-                for (var j = 0; j < obj.objects.length; j++) {
-                        list.push(prepend+"&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[obj.objects[j]].nouns[0], Objects[obj.objects[j]].adjectives, "a")+
-                                (Objects[obj.objects[j]].subtype == "container" ? (Objects[obj.objects[j]].opened ? " (open) containing:" : " (closed)") : (Objects[obj.objects[j]].subtype == "clothing" && Objects[obj.objects[j]].wearing ? " (wearing)" : ""))+"<br>");
-                        
-                        if (Objects[obj.objects[j]].subtype == "container" && Objects[obj.objects[j]].opened)
-                                list.push(smalllist(Objects[obj.objects[j]], prepend + "&nbsp;&nbsp;&nbsp;&nbsp;"));
-                }
+        for (var j = 0; j < obj.objects.length; j++) {
+                list.push(prepend+"&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[obj.objects[j]].nouns[0], Objects[obj.objects[j]].adjectives, "a")+
+                        (Objects[obj.objects[j]].subtype == "container" ? (Objects[obj.objects[j]].opened ? " (open) containing:" : " (closed)") : (Objects[obj.objects[j]].subtype == "clothing" && Objects[obj.objects[j]].wearing ? " (wearing)" : ""))+"<br>");
+                
+                if (Objects[obj.objects[j]].subtype == "container" && Objects[obj.objects[j]].opened)
+                        list.push(smalllist(Objects[obj.objects[j]], prepend + "&nbsp;&nbsp;&nbsp;&nbsp;"));
         }
         
         if (list.length == 0)
@@ -112,13 +103,11 @@ function smalllist(obj, prepend) {
 
 
 
-function getparent(obj) {
+function getParent(obj) {
         for (var j in Objects) {
-                if (typeof(Objects[j].objects) != 'undefined') {
-                        for (var k = 0; k < Objects[j].objects.length; k++) {
-                                if (Objects[j].objects[k] == obj)
-                                        return Objects[j];
-                        }
+                for (var k = 0; k < Objects[j].objects.length; k++) {
+                        if (Objects[j].objects[k] == obj)
+                                return Objects[j];
                 }
         }
         
@@ -130,15 +119,16 @@ function getparent(obj) {
 }
 
 function get(obj, dest) {
-        var p = getparent(obj);
+        var p = getParent(obj);
 
         if (typeof(dest) != 'undefined') {
-                if (!Objects[dest].has(obj) && p) {
+                if (!Objects[dest].has(obj) && p || Objects[dest].has(obj) && p && p.id != dest) {
+                        
                      Objects[dest].objects.push(obj);
                      
                      p.objects.splice(p.objects.indexOf(obj), 1);
                 }
-        } else if (!target.has(obj) && p) {
+        } else if (!target.has(obj) && p || target.has(obj) && p && p.id != target.id) {
 		target.objects.push(obj);
 		
                 p.objects.splice(p.objects.indexOf(obj), 1);
@@ -146,7 +136,7 @@ function get(obj, dest) {
 }
 
 function drop(obj, dest) {
-        var p = getparent(obj);
+        var p = getParent(obj);
         
 	if (target.has(obj) && p) {
                 p.objects.splice(p.objects.indexOf(obj), 1);
@@ -161,14 +151,12 @@ function drop(obj, dest) {
 function attack(obj) {
 	Objects[target.location].objects.push("goblin_corpse");
 	for (var j in Objects) {
-		if (typeof(Objects[j].objects) != 'undefined') {
-			for (var k = 0; k < Objects[j].objects.length; k++) {
-				if (Objects[j].objects[k] == obj) {
-					Objects[j].objects.splice(k, 1);
-					return;
-				}
-			}
-		}
+                for (var k = 0; k < Objects[j].objects.length; k++) {
+                        if (Objects[j].objects[k] == obj) {
+                                Objects[j].objects.splice(k, 1);
+                                return;
+                        }
+                }
 	}
 
 }
@@ -188,17 +176,15 @@ function objectMatches(id, noun, adjectives) {
         return true;
 }
 
-function findObjectsOnTarget(optional_target) {
+function findObjectsOnTarget(optional_target, include_children) {
         var list = [];
 
         function loop(obj) {
-                if (typeof(obj.objects) != 'undefined') {
-                        for (var j = 0; j < obj.objects.length; j++) {
-                                list.push(obj.objects[j]);
+                for (var j = 0; j < obj.objects.length; j++) {
+                        list.push(obj.objects[j]);
 
-                                if (typeof(Objects[obj.objects[j]].objects) != 'undefined' && (typeof(Objects[obj.objects[j]].opened) != 'undefined' && Objects[obj.objects[j]].opened || typeof(Objects[obj.objects[j]].opened) == 'undefined'))
-                                        loop(Objects[obj.objects[j]]);
-                        }
+                        if (Objects[obj.objects[j]].opened)
+                                loop(Objects[obj.objects[j]]);
                 }
         }
 
@@ -211,13 +197,11 @@ function findObjectsInRoom() {
         var list = [];
 
         function loop(obj) {
-                if (typeof(obj.objects) != 'undefined') {
-                        for (var j = 0; j < obj.objects.length; j++) {
-                                list.push(obj.objects[j]);
+                for (var j = 0; j < obj.objects.length; j++) {
+                        list.push(obj.objects[j]);
 
-                                if (typeof(Objects[obj.objects[j]].objects) != 'undefined' && (typeof(Objects[obj.objects[j]].opened) != 'undefined' && Objects[obj.objects[j]].opened || typeof(Objects[obj.objects[j]].opened) == 'undefined'))
-                                        loop(Objects[obj.objects[j]]);
-                        }
+                        if (Objects[obj.objects[j]].opened)
+                                loop(Objects[obj.objects[j]]);
                 }
         }
 
@@ -230,18 +214,18 @@ function findObjects(noun, adjectives, obj) {
         var list = [];
 
         function loop(obj) {
-                if (typeof(obj.objects) != 'undefined' && (typeof(obj.opened) == "undefined" || obj.opened)) {
+                if (obj.opened) {
                         for (var j = 0; j < obj.objects.length; j++) {
                                 if (objectMatches(obj.objects[j], noun, adjectives)) {
                                         list.push(obj.objects[j]);
                                 }
 
-                                if (typeof(Objects[obj.objects[j]].objects) != 'undefined' && (typeof(Objects[obj.objects[j]].opened) != 'undefined' && Objects[obj.objects[j]].opened || typeof(Objects[obj.objects[j]].opened) == 'undefined'))
+                                if (Objects[obj.objects[j]].opened)
                                         loop(Objects[obj.objects[j]]);
                         }
                 }
         }
-
+        
         if (typeof(obj) != 'undefined')
                 loop(Objects[obj]);
         else {
@@ -255,7 +239,6 @@ function findObjects(noun, adjectives, obj) {
                 for (var j = 0; j < characters.length; j++)
                         list.push(characters[j]);
         }
-
 
         return list;
 }

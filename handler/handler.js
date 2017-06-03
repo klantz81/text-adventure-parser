@@ -418,11 +418,11 @@ var Handler =  {
                                                 }
                                         }
                                 } else {
-                                        response = "I don't understand.";
+                                        response = "I don't understand (1).";
                                 }
                         }
                 } else {
-                        response = "I don't understand.";
+                        response = "I don't understand (2).";
                 }
                 
                 var plot_response = Plot.update();

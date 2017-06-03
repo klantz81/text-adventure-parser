@@ -1,5 +1,5 @@
 var BNF = {
-        "COMMAND": ["SHORTCUT", "ANSWER", "ACTION"],
+        "COMMAND": ["ACTION", "ANSWER", "SHORTCUT"],//, "ANSWER", "ACTION"],
         
         
         

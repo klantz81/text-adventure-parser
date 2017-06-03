@@ -119,6 +119,7 @@ addContainer("small_chest", {
         nouns:["chest"],
         adjectives:["small"],
 	hidden:true,
+        opened:false,
         objects:["goblin_corpse"],
         drop:function() { Objects.small_chest.opened = true; return "Okay, so that's one way to do it.<br>"+Objects.small_chest.inspect(); },
         
@@ -158,6 +159,8 @@ addContainer("large_box", {
         nouns:["box"],
         adjectives:["large","ornate"],
 	hidden:true,
+        locked:true,
+        opened:false,
         objects:["sword"],
 });
 
@@ -188,7 +191,7 @@ addItem('small_sword', {
         adjectives:["small"]
 });
 
-addContainer('bag', {
+addItem('bag', {
         subtype:"container",
         nouns:["bag"],
         adjectives:["worn"],
