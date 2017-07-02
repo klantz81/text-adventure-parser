@@ -57,9 +57,9 @@ function list(obj, prepend) {
                 obj = Objects[obj];
         
         if (obj.type == "room") {
-                for (var j in Objects) {
-                        if (Objects[j].type == "character" && Objects[j].location == obj.id && Objects[j].nouns[0] != 'player') {
-                                list.push("&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Objects[j].nouns[0], [], "")+" is here.<br>");
+                for (var j in Characters) {
+                        if (Characters[j].location == obj.id && Characters[j].nouns[0] != 'player') {
+                                list.push("&nbsp;&nbsp;&nbsp;&nbsp;"+theNoun(Characters[j].nouns[0], [], "")+" is here.<br>");
                         }
                 }
         }
@@ -247,8 +247,8 @@ function findCharacters(noun, adjectives) {
 
         var list = [];
 
-        for (var j in Objects) {
-                if (Objects[j].location && Objects[j].location == Objects.Player.location && Objects[j].type == "character") {
+        for (var j in Characters) {
+                if (Characters[j].location == Characters.Player.location) {
                         if (objectMatches(j, noun, adjectives)) {
                                 list.push(j);
                         }

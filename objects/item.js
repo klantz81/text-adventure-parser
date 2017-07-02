@@ -36,8 +36,8 @@ function addItem(id, obj) {
                         
                         if (i == null) {
                                 var characters = [];
-                                for (var j in Objects)
-                                        if (Objects[j].type == "character" && j != target.id)
+                                for (var j in Characters)
+                                        if (j != target.id)
                                                 characters.push(j);
 
                                 if (characters.length == 1) {

@@ -6,13 +6,14 @@ BNF.NOUN = Nouns;
 BNF.ADJECTIVE = Adjectives;
         
 var Objects = { };
+var Characters = { };
 
 function prepObject(id, type, obj) {
         
         var o = { id: id, type: type };
         
-        for (var i in obj)
-                o[i] = obj[i];
+        for (var j in obj)
+                o[j] = obj[j];
         
         
         
@@ -82,6 +83,9 @@ function prepObject(id, type, obj) {
         
         
         Objects[id] = o;
+        
+        if (type == "character")
+                Characters[id] = o;
         
         return o;
 }
