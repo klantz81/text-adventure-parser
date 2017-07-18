@@ -38,7 +38,7 @@ addRoom("galley", {
         nouns:["galley",'room'],
         adjectives:["small"],
         
-        objects:["large_box","small_chest","small_sword","bag","green_keycard","yellow_keycard","door","inner_door","monitor","suit","airlock_reference"]//,"ashton"]
+        objects:["large_box","small_chest","small_sword","bag","green_keycard","yellow_keycard","red_keycard","purple_keycard","door","inner_door","monitor","suit","airlock_reference"]//,"ashton"]
 });
 
 addRoom("hydroponics", {
@@ -211,6 +211,14 @@ addItem('yellow_keycard', {
 addItem('green_keycard', {
         nouns:["card","keycard","key"],
         adjectives:["green","access"]
+});
+addItem('red_keycard', {
+        nouns:["card","keycard","key"],
+        adjectives:["red","access"]
+});
+addItem('purple_keycard', {
+        nouns:["card","keycard","key"],
+        adjectives:["purple","access"]
 });
 
 addItem('suit', {

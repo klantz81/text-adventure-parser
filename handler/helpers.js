@@ -28,6 +28,30 @@ function theNoun(noun, adjectives, the) {
         return aAnThe(the, adjectives.join(" ")+" "+noun.replace(/_/g, " "));
 }
 
+function getNumber(str) {
+        if (/(ten|10)/i.test(str))
+                return 10;
+        if (/(nine|9)/i.test(str))
+                return 9;
+        if (/(eight|8)/i.test(str))
+                return 8;
+        if (/(seven|7)/i.test(str))
+                return 7;
+        if (/(six|6)/i.test(str))
+                return 6;
+        if (/(five|5)/i.test(str))
+                return 5;
+        if (/(four|4)/i.test(str))
+                return 4;
+        if (/(three|3)/i.test(str))
+                return 3;
+        if (/(two|2)/i.test(str))
+                return 2;
+        if (/(one|1)/i.test(str))
+                return 1;
+        return 0;
+}
+
 function whichNoun(objects) {
 	var arr = [];
 	for (var j = 0; j < objects.length; j++) {

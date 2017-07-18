@@ -209,6 +209,8 @@ var BNF = {
                                 "ADJECTIVES NOUN",
                                 "ADJECTIVE ADJECTIVE NOUN",
                                 "ADJECTIVE NOUN",
+                                
+                                "COUNT NOUN",                                   // testing
 
                                 "NOUN that is ADJECTIVES",                      // testing
                                 "NOUN"                                                          ],
@@ -224,6 +226,8 @@ var BNF = {
                                 
         "AND": [",_and", "and", ","],
         "EXCEPT": ["except_for", "except", "but_for", "but"],
+        
+        "COUNT": ["ten", "nine", "eight", "seven", "six", "five", "four", "three", "two", "one", "zero", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0"],
         
         "ARTICLE": ["a", "an", "the"],
         "ADJECTIVE": [],                                                        // populated by methods to create objects and characters

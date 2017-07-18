@@ -106,18 +106,22 @@ var Handler =  {
         previous_shortcut: null,
         previous_action: null,
         
+        previous_counts: null,
         previous_nouns: null,
         previous_adjectives: null,
         previous_objects: null,
         
-        previous_tnouns: null,
+        previous_tcounts: null,
+        previous_tnoun: null,
         previous_tadjectives: null,
         previous_tobjects: null,
         
+        previous_icount: null,
         previous_inoun: null,
         previous_iadjectives: null,
         previous_iobjects: null,
         
+        previous_pcount: null,
         previous_pnoun: null,
         previous_padjectives: null,
         previous_pobjects: null,
@@ -131,18 +135,22 @@ var Handler =  {
                 var shortcut = Handler.previous_shortcut;
                 var action = Handler.previous_action;
 
+                var counts = Handler.previous_counts;
                 var nouns = Handler.previous_nouns;
                 var adjectives = Handler.previous_adjectives;
                 var objects = Handler.previous_objects;
                 
+                var tcount = Handler.previous_tcount;
                 var tnoun = Handler.previous_tnoun;
                 var tadjectives = Handler.previous_tadjectives;
                 var tobjects = Handler.previous_tobjects;
                 
+                var icount = Handler.previous_icount;
                 var inoun = Handler.previous_inoun;
                 var iadjectives = Handler.previous_iadjectives;
                 var iobjects = Handler.previous_iobjects;
                 
+                var pcount = Handler.previous_pcount;
                 var pnoun = Handler.previous_pnoun;
                 var padjectives = Handler.previous_padjectives;
                 var pobjects = Handler.previous_pobjects;
@@ -185,14 +193,22 @@ var Handler =  {
                                         var id = "noun"+j;
                                         
                                         if (Handler.expect_answer == id) {
+                                                var count = Parser.getPValue("OBJECT", "COUNT");
+                                                if (count)
+                                                        counts[j] = Handler.previous_counts[j] = count;
+                                                else
+                                                        counts[j] = Handler.previous_counts[j];
+                                                
                                                 var noun = Parser.getPValue("OBJECT", "NOUN");
                                                 if (noun)
                                                         nouns[j] = Handler.previous_nouns[j] = noun;
                                                 else
                                                         nouns[j] = Handler.previous_nouns[j];
+                                                
                                                 adjectives[j] = Handler.previous_adjectives[j] = Parser.getArray("ADJECTIVE");
                                                 objects[j] = Handler.previous_objects[j] = findObjects(nouns[j], adjectives[j], j == 12 ? undefined : (objects[12].length == 1 ? objects[12][0] : undefined));
                                         } else {
+                                                counts[j] = Handler.previous_counts[j];
                                                 nouns[j] = Handler.previous_nouns[j];
                                                 adjectives[j] = Handler.previous_adjectives[j];
                                                 objects[j] = Handler.previous_objects[j] = findObjects(nouns[j], adjectives[j], j == 12 ? undefined : (objects[12].length == 1 ? objects[12][0] : undefined));
@@ -200,6 +216,9 @@ var Handler =  {
                                 }
                                 
                                 if (Handler.expect_answer == "inoun") {
+                                        var ticount = Handler.previous_icount = Parser.getPValue("OBJECT", "COUNT");
+                                        if (ticount)
+                                                icount = ticount;
                                         var tinoun = Handler.previous_inoun = Parser.getPValue("OBJECT", "NOUN");
                                         if (tinoun)
                                                 inoun = tinoun;
@@ -207,12 +226,16 @@ var Handler =  {
                                         var iobjects = Handler.previous_iobjects = findCharacters(inoun, iadjectives);
                                         
                                 } else {
+                                        icount = Handler.previous_icount;
                                         inoun = Handler.previous_inoun;
                                         iadjectives = Handler.previous_iadjectives;
                                         iobjects = Handler.previous_iobjects;
                                 }
                                 
                                 if (Handler.expect_answer == "pnoun") {
+                                        var tpcount = Handler.previous_pcount = Parser.getPValue("OBJECT", "COUNT");
+                                        if (tpcount)
+                                                pcount = tpcount;
                                         var tpnoun = Handler.previous_pnoun = Parser.getPValue("OBJECT", "NOUN");
                                         if (tpnoun)
                                                 pnoun = tpnoun;
@@ -220,6 +243,7 @@ var Handler =  {
                                         var pobjects = Handler.previous_pobjects = findObjects(pnoun, padjectives);
                                         
                                 } else {
+                                        pcount = Handler.previous_count;
                                         pnoun = Handler.previous_pnoun;
                                         padjectives = Handler.previous_padjectives;
                                         pobjects = Handler.previous_pobjects;
@@ -229,7 +253,7 @@ var Handler =  {
                                 var action = Handler.previous_action = Parser.getClass("ACTION");
                                 
                                 
-                                
+                                var tcount = Handler.previous_tcount = Parser.getPValue("TARGET_OBJECT", "COUNT");
                                 var tnoun = Handler.previous_tnoun = Parser.getPValue("TARGET_OBJECT", "NOUN");
                                 var tadjectives = Handler.previous_tadjectives = Parser.getPArray("TARGET_OBJECT", "ADJECTIVE");
                                 var tobjects = Handler.previous_tobjects = findCharacters(tnoun, tadjectives);
@@ -238,31 +262,35 @@ var Handler =  {
                                 else if (!retain_target)
                                         target = Objects.Player;
                                 
-                                
-                                var nouns = [], adjectives = [], objects = [];
+                                var counts = [], nouns = [], adjectives = [], objects = [];
                                 
                                 for (var j = 12; j >= 0; j--) {
                                         var id = "OBJECT"+j;
                                         
+                                        var c = Parser.getPValue(id, "COUNT");
                                         var n = Parser.getPValue(id, "NOUN");
                                         var a = Parser.getPArray(id, "ADJECTIVE");
 
                                         var o = findObjects(n, a, j == 12 ? undefined : (objects[12].length == 1 ? objects[12][0] : undefined));
                                         
+                                        counts[j] = c;
                                         nouns[j] = n;
                                         adjectives[j] = a;
                                         objects[j] = (n == "it" || n == "them") ? Handler.previous_it : o;
                                         
                                 }
                                 
+                                Handler.previous_counts = counts;
                                 Handler.previous_nouns = nouns;
                                 Handler.previous_adjectives = adjectives;
                                 Handler.previous_objects = objects;
                 
+                                var icount = Handler.previous_icount = Parser.getPValue("INDIRECT_OBJECT", "COUNT");
                                 var inoun = Handler.previous_inoun = Parser.getPValue("INDIRECT_OBJECT", "NOUN");
                                 var iadjectives = Handler.previous_iadjectives = Parser.getPArray("INDIRECT_OBJECT", "ADJECTIVE");
                                 var iobjects = Handler.previous_iobjects = findCharacters(inoun, iadjectives);
                                 
+                                var pcount = Handler.previous_pcount = Parser.getPValue("PREPOSITION_OBJECT", "COUNT");
                                 var pnoun = Handler.previous_pnoun = Parser.getPValue("PREPOSITION_OBJECT", "NOUN");
                                 var padjectives = Handler.previous_padjectives = Parser.getPArray("PREPOSITION_OBJECT", "ADJECTIVE");
                                 var pobjects = Handler.previous_pobjects = findObjects(pnoun, padjectives);
@@ -323,7 +351,7 @@ var Handler =  {
                                         var method = action.replace(/ACTION_/, '').toLowerCase();
 
                                         for (var j = 0; j <= 12; j++) {                                                 // check for ambiguity
-                                                if (objects[j].length > 1 && PluralNouns.indexOf(nouns[j]) == -1) {
+                                                if (objects[j].length > 1 && PluralNouns.indexOf(nouns[j]) == -1 && !counts[j]) {
                                                         response = whichNoun(objects[j]);
                                                         Handler.expect_answer = "noun"+j;
                                                         break;
@@ -369,23 +397,26 @@ var Handler =  {
                                                 
                                                 for (var j = 12; j <= 12; j++)
                                                         for (var k = 0; k < objects[j].length; k++)
-                                                                eobjs.push(objects[j][k]);
+                                                                if (!counts[j] || counts[j] && k < getNumber(counts[j]))
+                                                                        eobjs.push(objects[j][k]);
                                                         
                                                 for (var j = 6; j <= 11; j++)
                                                         for (var k = 0; k < objects[j].length; k++)
-                                                                eobjs.push(objects[j][k]);
+                                                                if (!counts[j] || counts[j] && k < getNumber(counts[j]))
+                                                                        eobjs.push(objects[j][k]);
                                                         
                                                 for (var j = 0; j <= 5; j++)
                                                         for (var k = 0; k < objects[j].length; k++)
-                                                                if (eobjs.indexOf(objects[j][k]) == -1) {
-                                                                        objs.push(objects[j][k]);
-                                                                }
+                                                                if (eobjs.indexOf(objects[j][k]) == -1)
+                                                                        if (!counts[j] || counts[j] && k < getNumber(counts[j]))
+                                                                                objs.push(objects[j][k]);
+
                                                 
                                                 Handler.previous_it = objs;
                                                 
                                                 var iobj = iobjects.length > 0 ? iobjects[0] : null;
                                                 var pobj = pobjects.length > 0 ? pobjects[0] : null;
-
+                                                        
                                                 if (method == "wait" || method == "follow") {
                                                         response = typeof(target[method]) == "function" ? target[method](iobj, pobj) : "You can't do that.";
                                                         
