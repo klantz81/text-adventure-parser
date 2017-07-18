@@ -206,10 +206,15 @@ var BNF = {
                                 "ARTICLE NOUN that is ADJECTIVES",              // testing
                                 "ARTICLE NOUN",
 
+                                "COUNT ADJECTIVES NOUN",                        // testing
+                                "COUNT ADJECTIVE ADJECTIVE NOUN",               // testing
+                                "COUNT ADJECTIVE NOUN",                         // testing
+
                                 "ADJECTIVES NOUN",
                                 "ADJECTIVE ADJECTIVE NOUN",
                                 "ADJECTIVE NOUN",
                                 
+                                "COUNT NOUN that are ADJECTIVES",               // testing
                                 "COUNT NOUN",                                   // testing
 
                                 "NOUN that is ADJECTIVES",                      // testing
